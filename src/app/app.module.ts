@@ -6,14 +6,12 @@ import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HeroesModule } from './heroes/heroes.module';
-
-import { CrisisListComponent } from './crisis-list.component';
+import { CrisisCenterModule } from './crisis-center/crisis-center.module';
 import { PageNotFoundComponent } from './not-found.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CrisisListComponent,
     PageNotFoundComponent
   ],
   imports: [
@@ -21,6 +19,7 @@ import { PageNotFoundComponent } from './not-found.component';
     FormsModule,
     HttpModule,
     HeroesModule,
+    CrisisCenterModule,
     AppRoutingModule
   ],
   providers: [],
