@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import 'rxjs/add/operator/switchMap';
+import { Observable } from 'rxjs/Observable';
 
 import { Hero } from './hero';
 import { HeroService } from './hero.service';
@@ -8,7 +10,9 @@ import { HeroService } from './hero.service';
   template: `
     <h2>HEROES</h2>
     <ul class="heroes">
-      <li *ngFor="let hero of heroes"
+      <li
+        *ngFor="let hero of heroes | async"
+        [class.selected]="isSelected(hero)"
         (click)="onSelect(hero)">
         <span class="badge">{{hero.id}}</span> {{hero.name}}
       </li>
@@ -19,20 +23,25 @@ import { HeroService } from './hero.service';
 })
 export class HeroListComponent implements OnInit {
   title = 'Tour of Heroes';
-  heroes: Hero[];
-  selectedHero: Hero;
+  heroes: Observable<Hero[]>;
+  selectedID: number;
 
   constructor(
     private service: HeroService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
-  getHeroes(): void {
-    this.service.getHeroes().then(heroes => this.heroes = heroes);
+  isSelected(hero: Hero): boolean {
+    return hero.id === this.selectedID;
   }
 
-  ngOnInit(): void {
-    this.getHeroes();
+  ngOnInit() {
+    this.heroes = this.route.params
+      .switchMap((params: Params) => {
+        this.selectedID = +params['id'];
+        return this.service.getHeroes();
+      })
   }
 
   onSelect(hero: Hero): void {

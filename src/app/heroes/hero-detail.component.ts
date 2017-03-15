@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, HostBinding } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 
+import { slideDownAnimation } from '../animations';
 import { HeroService } from './hero.service';
 import { Hero } from './hero';
 
@@ -19,9 +20,14 @@ import { Hero } from './hero';
       </div>
       <button (click)="gotoHeroes()">Back</button>
     </div>
-  `
+  `,
+  animations: [slideDownAnimation]
 })
 export class HeroDetailComponent implements OnInit {
+
+  @HostBinding('@routeAnimation') routeAnimation = true;
+  @HostBinding('style.display') display = 'block';
+  @HostBinding('style.position') position = 'absolute';
 
   hero: Hero;
   constructor(
