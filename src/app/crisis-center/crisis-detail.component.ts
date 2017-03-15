@@ -42,7 +42,7 @@ export class CrisisDetailComponent implements OnInit {
   }
 
   gotoCrises(): void {
-    this.router.navigate(['/crisis-center', { id: this.crisis.id }]);
+    this.router.navigate(['../', {id: this.crisis.id}], {relativeTo: this.route });
   }
 }
 
