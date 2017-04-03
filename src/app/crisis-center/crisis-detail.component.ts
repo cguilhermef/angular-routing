@@ -3,7 +3,8 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 
 import { slideDownAnimation } from '../animations';
-import { Crisis, CrisisService } from './crisis.service';
+import { Crisis } from './crisis.service';
+import { DialogService } from '../dialog.service';
 
 @Component({
   selector: 'my-crisis-detail',
@@ -14,10 +15,13 @@ import { Crisis, CrisisService } from './crisis.service';
         <label>id: </label>{{crisis.id}}
       </div>
       <div>
-        <label>name: </label>
-        <input [(ngModel)]="crisis.name" placeholder="name"/>
+        <label>Name: </label>
+        <input [(ngModel)]="editName" placeholder="name"/>
       </div>
-      <button (click)="gotoCrises()">Back</button>
+      <p>
+        <button (click)="save()">Save</button>
+        <button (click)="cancel()">Cancel</button>
+      </p>
     </div>
   `,
   animations: [slideDownAnimation]
@@ -29,20 +33,37 @@ export class CrisisDetailComponent implements OnInit {
   @HostBinding('style.position') position = 'absolute';
 
   crisis: Crisis;
+  editName: string;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private service: CrisisService
+    private ds: DialogService
   ) {}
 
   ngOnInit(): void {
-    this.route.params
-      .switchMap((params: Params) => this.service.getCrisis(+params['id']))
-      .subscribe((crisis: Crisis) => this.crisis = crisis);
+    this.route.data
+      .subscribe((data: {crisis: Crisis}) => {
+        this.editName = data.crisis.name;
+        this.crisis = data.crisis;
+      })
+  }
+  canDeactivate(): Promise<boolean> | boolean {
+    if (!this.crisis ||  this.crisis.name === this.editName) {
+      return true;
+    }
+    return this.ds.confirm('Discard changes?');
   }
 
   gotoCrises(): void {
     this.router.navigate(['../', {id: this.crisis.id}], {relativeTo: this.route });
+  }
+
+  cancel() {
+    this.gotoCrises();
+  }
+  save() {
+    this.crisis.name = this.editName;
+    this.gotoCrises();
   }
 }
 

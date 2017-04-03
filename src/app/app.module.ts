@@ -12,6 +12,8 @@ import { CrisisCenterModule } from './crisis-center/crisis-center.module';
 import { PageNotFoundComponent } from './not-found.component';
 import { AdminModule } from './admin/admin.module';
 
+import { DialogService } from './dialog.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +30,7 @@ import { AdminModule } from './admin/admin.module';
     LoginRoutingModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [DialogService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
